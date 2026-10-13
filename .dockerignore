@@ -1,0 +1,7 @@
+.git
+.env
+.cache
+bin
+node_modules
+test-results
+coverage.out

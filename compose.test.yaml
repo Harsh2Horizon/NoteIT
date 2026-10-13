@@ -1,0 +1,29 @@
+name: noteit-tests
+
+services:
+  postgres-test:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: test-only-admin
+      AUTH_DB_PASSWORD: test-only-auth
+      NOTES_DB_PASSWORD: test-only-notes
+    tmpfs:
+      - /var/lib/postgresql/data
+    volumes:
+      - ./deploy/init-db.sh:/docker-entrypoint-initdb.d/01-noteit.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres && PGPASSWORD=test-only-notes psql -h 127.0.0.1 -U noteit_notes -d noteit_notes -c 'SELECT 1' >/dev/null"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  tests:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.test
+    environment:
+      TEST_AUTH_DATABASE_URL: postgres://noteit_auth:test-only-auth@postgres-test:5432/noteit_auth?sslmode=disable
+      TEST_NOTES_DATABASE_URL: postgres://noteit_notes:test-only-notes@postgres-test:5432/noteit_notes?sslmode=disable
+    depends_on:
+      postgres-test:
+        condition: service_healthy

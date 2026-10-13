@@ -1,0 +1,7 @@
+FROM golang:1.27.1-alpine
+RUN apk add --no-cache gcc musl-dev nodejs
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+CMD ["sh", "-c", "go vet ./... && go test -race -count=1 -v ./... && node --test web/*.test.mjs"]
