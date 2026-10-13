@@ -80,6 +80,10 @@ Database credentials are consumed during the first PostgreSQL initialization. Ed
 
 See [docs/api.md](docs/api.md) for routes, examples, filters, payloads, and error behavior. All note writes except creation require the current `version`. The API returns `409` with the current note when a stale write or invalid-state action is rejected.
 
+## Architecture documentation
+
+Start with the [architecture overview](docs/architecture.md) for system diagrams, service boundaries, and end-to-end flows. The [frontend guide](docs/frontend-architecture.md) explains views, browser state, autosave, draft recovery, and Markdown rendering. The [backend guide](docs/backend-architecture.md) covers every handler, database schema, authentication, concurrency, and publication access. The [operations guide](docs/operations.md) covers configuration, deployment, tests, troubleshooting, and verification limits.
+
 ## Tests
 
 ```sh
